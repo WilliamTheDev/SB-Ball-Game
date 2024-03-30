@@ -1,0 +1,85 @@
+SCREEN["width"] = 600
+SCREEN["height"] = 500
+
+Player["width"] = SCREEN["width"] / 3
+Player["height"] = 20
+Player["x"] = SCREEN["width"] / 2 - Player["width"] / 2
+Player["y"] = SCREEN["height"] - Player["height"] - 10
+Player["vx"] = 0
+
+Ball["radius"] = 25
+Ball["x"] = Math.GetRandomNumber(SCREEN["width"])
+Ball["y"] = 1
+Ball["vx"] = 3
+Ball["vy"] = 3
+
+true = 1
+time = 10
+alive = 0
+score = 0
+
+' Initiates the Graphics Window & Main Loop
+GraphicsWindow.Width = SCREEN["width"]
+GraphicsWindow.Height = SCREEN["height"]
+GraphicsWindow.BackgroundColor = "White"
+GraphicsWindow.BrushColor = "Black"
+
+While true = 1
+  If alive = 0 Then
+    BallShape = Shapes.AddEllipse(Ball["radius"], Ball["radius"])
+    PlayerShape = Shapes.AddRectangle(Player["width"], Player["height"])
+    alive = 1
+  Else
+    GraphicsWindow.Title = "The Ball Game | Score: " + score
+    Shapes.Move(PlayerShape, Player["x"], Player["y"])
+    Shapes.Move(BallShape, Ball["x"], Ball["y"])
+    
+    '  x & y ball border collisions
+    If Ball["x"] <= 0 Or Ball["x"] >= SCREEN["width"] - Ball["radius"] Then
+      Ball["vx"] = - Ball["vx"]
+    ElseIf  Ball["y"] <= 0 Then
+      Ball["vy"] = -Ball["vy"]
+    ElseIf Ball["y"] >= SCREEN["height"] - Ball["radius"] Then
+      Program.End()
+    EndIf
+    
+    ' x player border collisions
+    If Player["x"] <= 0 then
+      Player["x"] = 0
+    ElseIf Player["x"]+Player["width"] >= SCREEN["width"] then 
+      Player["x"] = SCREEN["width"] - Player["width"]
+    EndIf
+    
+    ' ball motion
+    Ball["x"] = Ball["x"] + Ball["vx"]
+    Ball["y"] = Ball["y"] + Ball["vy"]
+    
+    ' player motion
+    GraphicsWindow.KeyDown = inputControl
+    Player["x"] = Player["x"] + Player["vx"]
+    
+    ' player ball collisions
+    If Ball["x"] + Ball["radius"] >= Player["x"] then 
+      If Ball["x"] <= Player["x"] + Player["width"] then
+        If Ball["y"] + Ball["radius"] >= Player["y"] then
+          If Ball["y"] <= Player["y"] + Player["height"] then 
+            
+            Ball["vy"] = -Ball["vy"]
+            score = score + 1
+          EndIf
+        EndIf
+      EndIf
+    EndIf
+    
+  EndIf
+  Program.Delay(time)
+EndWhile
+
+Sub inputControl
+  input = GraphicsWindow.LastKey
+  If input = "Right" Then
+    Player["vx"] = 3
+  ElseIf input = "Left" Then
+    Player["vx"] = -3
+  EndIf
+EndSub

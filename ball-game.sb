@@ -63,14 +63,13 @@ While true = 1
       If Ball["x"] <= Player["x"] + Player["width"] then
         If Ball["y"] + Ball["radius"] >= Player["y"] then
           If Ball["y"] <= Player["y"] + Player["height"] then 
-            
             Ball["vy"] = -Ball["vy"]
             score = score + 1
           EndIf
         EndIf
       EndIf
     EndIf
-    
+
   EndIf
   Program.Delay(time)
 EndWhile
